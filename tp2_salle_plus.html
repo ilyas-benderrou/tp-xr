@@ -7,66 +7,24 @@
 <!-- Version figée : A-Frame 1.7.1 (reproductibilité) -->
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.7.1/dist/aframe-v1.7.1.min.js"></script>
 <style>
-  body { margin: 0; }
   #hud { position: fixed; bottom: 8px; left: 8px; right: 8px; z-index: 10; pointer-events: none;
          font: 600 15px system-ui, sans-serif; color: #fff; text-shadow: 0 0 4px #000, 0 0 4px #000; }
   #barre { position: fixed; top: 8px; right: 8px; z-index: 11; display: flex; gap: 6px; }
-  #barre button, #menu button { font: 600 14px system-ui, sans-serif; border: 0; border-radius: 10px;
-         padding: 8px 12px; background: #1b2a41; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
-  #menu, #aide { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
-         background: rgba(10,20,35,.75); }
-  .carte { background: #fff; color: #1b2a41; border-radius: 14px; padding: 18px; max-width: 340px;
-         font: 15px/1.4 system-ui, sans-serif; text-align: center; }
-  .carte h2 { margin: 0 0 8px; font-size: 19px; }
-  .carte ul { text-align: left; padding-left: 18px; margin: 8px 0; }
-  #menu button { margin: 6px; padding: 12px 16px; }
-  #btnFacile { background: #2e7d32 !important; }
-  #btnDifficile { background: #c62828 !important; }
-  .cache { display: none !important; }
+  #barre button { font: 600 15px system-ui, sans-serif; border: 0; border-radius: 10px; padding: 9px 14px;
+         background: #1b2a41; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+  #barre button:disabled { opacity: .4; }
 </style>
 </head>
 <body>
-
-<!-- ================= INTERFACE HTML (par-dessus la scène) ================= -->
-<div id="menu">
-  <div class="carte">
-    <h2>Salle de formation XR</h2>
-    Placez les 4 instruments dans leur zone.<br>Choisissez un niveau :
-    <div>
-      <button id="btnFacile">Facile</button>
-      <button id="btnDifficile">Difficile</button>
-    </div>
-    <small><b>Facile</b> : zones nommées, pas de limite de temps.<br>
-    <b>Difficile</b> : zones mélangées et sans nom, 90 s maximum.</small>
-  </div>
-</div>
-
-<div id="aide" class="cache">
-  <div class="carte">
-    <h2>Aide</h2>
-    <ul>
-      <li>Visez avec le <b>point blanc</b> au centre.</li>
-      <li><b>Touchez l'écran</b> pour saisir un instrument.</li>
-      <li>Visez sa <b>zone</b> sur la table blanche et touchez.</li>
-      <li>Retouchez l'instrument tenu pour le <b>reposer</b>.</li>
-      <li>Touchez le <b>sol</b> pour vous déplacer.</li>
-    </ul>
-    <div id="indices"></div>
-    <button onclick="document.getElementById('aide').classList.add('cache')"
-            style="margin-top:8px;padding:8px 14px;border:0;border-radius:10px;background:#1b2a41;color:#fff">Fermer</button>
-  </div>
-</div>
-
-<div id="barre" class="cache">
+<div id="barre">
   <button id="btnAide">? Aide</button>
-  <button id="btnRejouer">↻ Rejouer</button>
+  <button id="btnRejouer">Rejouer</button>
 </div>
-<div id="hud">Choisissez un niveau pour commencer.</div>
+<div id="hud">Visez avec le point blanc, touchez l'écran pour agir.</div>
 
-<!-- ============================ SCÈNE A-FRAME ============================ -->
 <a-scene id="scene" vr-mode-ui="enabled: false" renderer="antialias: true">
 
-  <!-- BLOC 1 : ENVIRONNEMENT -->
+  <!-- ============ BLOC 1 : ENVIRONNEMENT ============ -->
   <a-entity id="Environnement">
     <a-sky color="#9ec9ee"></a-sky>
     <a-entity light="type: ambient; intensity: 0.7"></a-entity>
@@ -80,68 +38,63 @@
     <a-plane position="3 1.5 0" rotation="0 -90 0" width="6" height="3" material="color: #e8eef5"></a-plane>
     <a-plane position="0 1.5 3" rotation="0 180 0" width="6" height="3" material="color: #e8eef5"></a-plane>
 
-    <!-- Table A : instruments -->
-    <a-entity id="Table_A" position="-0.6 0 -1">
-      <a-box position="0 0.725 0" width="1.1" height="0.05" depth="0.6" material="color: #8d6e63; roughness: 0.8"></a-box>
-      <a-box position="-0.5 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
-      <a-box position="0.5 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
-      <a-box position="-0.5 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
-      <a-box position="0.5 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
+    <!-- Table A : instruments (plateau à 0,75 m) -->
+    <a-entity id="Table_A" position="-0.65 0 -1">
+      <a-box position="0 0.725 0" width="1.2" height="0.05" depth="0.6" material="color: #8d6e63; roughness: 0.8"></a-box>
+      <a-box position="-0.55 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
+      <a-box position="0.55 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
+      <a-box position="-0.55 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
+      <a-box position="0.55 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#5d4037"></a-box>
     </a-entity>
 
     <!-- Table B : 4 zones de dépôt -->
     <a-entity id="Table_B" position="0.65 0 -1">
-      <a-box position="0 0.725 0" width="1.1" height="0.05" depth="0.6" material="color: #eceff1; roughness: 0.5"></a-box>
-      <a-box position="-0.5 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
-      <a-box position="0.5 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
-      <a-box position="-0.5 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
-      <a-box position="0.5 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
+      <a-box position="0 0.725 0" width="1.2" height="0.05" depth="0.6" material="color: #eceff1; roughness: 0.5"></a-box>
+      <a-box position="-0.55 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
+      <a-box position="0.55 0.35 -0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
+      <a-box position="-0.55 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
+      <a-box position="0.55 0.35 0.25" width="0.05" height="0.7" depth="0.05" color="#90a4ae"></a-box>
     </a-entity>
 
-    <!-- Panneau de mission (texte 3D sans accents : la police A-Frame ne les affiche pas) -->
-    <a-plane position="0 2.0 -2.95" width="2.6" height="1.0" material="color: #1b2a41; shader: flat"></a-plane>
-    <a-text id="Panneau" position="0 2.0 -2.93" width="2.4" align="center" color="#ffffff"
-            value="Salle de formation\nChoisissez un niveau."></a-text>
-    <a-text position="0 2.62 -2.93" width="2.2" align="center" color="#ffd54f"
+    <!-- Panneau de mission (textes 3D sans accents : la police A-Frame ne les a pas) -->
+    <a-plane position="0 2.0 -2.95" width="2.4" height="0.9" material="color: #1b2a41; shader: flat"></a-plane>
+    <a-text id="Panneau" position="0 2.0 -2.93" width="2.2" align="center" color="#ffffff"
+            value="Salle de formation\nPlacez chaque instrument\ndans sa zone."></a-text>
+    <a-text position="0 2.55 -2.93" width="2.2" align="center" color="#ffd54f"
             value="Prototype pedagogique - pas un dispositif medical"></a-text>
-
-    <!-- Panneau de résultats (caché jusqu'à la fin) -->
-    <a-entity id="Resultats" position="0 1.1 -2.9" visible="false">
-      <a-plane width="1.8" height="0.75" material="color: #ffffff; shader: flat"></a-plane>
-      <a-text id="ResultatsTexte" position="0 0 0.01" width="1.7" align="center" color="#1b2a41" value=""></a-text>
-    </a-entity>
   </a-entity>
 
-  <!-- BLOC 2 : ZONES DE DÉPÔT (positions fixées par le script selon le niveau) -->
+  <!-- ============ BLOC 2 : ZONES DE DÉPÔT ============ -->
   <a-entity id="Zones">
-    <a-cylinder id="zone_bistouri" class="interactif" zone-depot radius="0.09" height="0.01" color="#ef9a9a"></a-cylinder>
-    <a-cylinder id="zone_pince"    class="interactif" zone-depot radius="0.09" height="0.01" color="#90caf9"></a-cylinder>
-    <a-cylinder id="zone_ecarteur" class="interactif" zone-depot radius="0.09" height="0.01" color="#a5d6a7"></a-cylinder>
-    <a-cylinder id="zone_ciseaux"  class="interactif" zone-depot radius="0.09" height="0.01" color="#ffe082"></a-cylinder>
+    <a-cylinder id="zone_bistouri" class="interactif" zone-depot position="0.2 0.755 -1"  radius="0.09" height="0.01" color="#ef9a9a"></a-cylinder>
+    <a-cylinder id="zone_pince"    class="interactif" zone-depot position="0.5 0.755 -1"  radius="0.09" height="0.01" color="#90caf9"></a-cylinder>
+    <a-cylinder id="zone_ecarteur" class="interactif" zone-depot position="0.8 0.755 -1"  radius="0.09" height="0.01" color="#a5d6a7"></a-cylinder>
+    <a-cylinder id="zone_ciseaux"  class="interactif" zone-depot position="1.1 0.755 -1"  radius="0.09" height="0.01" color="#ce93d8"></a-cylinder>
+    <a-text position="0.2 0.9 -1" width="0.7" align="center" value="Bistouri"></a-text>
+    <a-text position="0.5 0.9 -1" width="0.7" align="center" value="Pince"></a-text>
+    <a-text position="0.8 0.9 -1" width="0.7" align="center" value="Ecarteur"></a-text>
+    <a-text position="1.1 0.9 -1" width="0.7" align="center" value="Ciseaux"></a-text>
   </a-entity>
 
-  <!-- BLOC 3 : 4 INSTRUMENTS (son + vibration propres à chacun) -->
+  <!-- ============ BLOC 3 : INSTRUMENTS (son et vibration propres à chacun) ============ -->
   <a-entity id="Instruments">
-    <a-box id="bistouri" class="interactif"
-           instrument="nom: Bistouri; zone: zone_bistouri; freq: 520; vib: 30; couleur: #ef9a9a"
-           position="-0.98 0.82 -1" width="0.2" height="0.08" depth="0.08"
+    <a-box id="bistouri" class="interactif" instrument="nom: Bistouri; zone: zone_bistouri; freq: 520; vib: 30"
+           position="-1.1 0.82 -1" width="0.22" height="0.08" depth="0.08"
            material="color: #e53935; metalness: 0.3; roughness: 0.4"></a-box>
-    <a-cylinder id="pince" class="interactif"
-           instrument="nom: Pince; zone: zone_pince; freq: 620; vib: 50; couleur: #90caf9"
-           position="-0.72 0.84 -1" rotation="0 0 90" radius="0.045" height="0.18"
+    <a-cylinder id="pince" class="interactif" instrument="nom: Pince; zone: zone_pince; freq: 640; vib: 50"
+           position="-0.8 0.84 -1" rotation="0 0 90" radius="0.05" height="0.2"
            material="color: #1e88e5; metalness: 0.3; roughness: 0.4"></a-cylinder>
-    <a-cone id="ecarteur" class="interactif"
-           instrument="nom: Ecarteur; zone: zone_ecarteur; freq: 720; vib: 70; couleur: #a5d6a7"
-           position="-0.46 0.83 -1" radius-bottom="0.065" radius-top="0" height="0.15"
+    <a-cone id="ecarteur" class="interactif" instrument="nom: Ecarteur; zone: zone_ecarteur; freq: 760; vib: 70"
+           position="-0.5 0.83 -1" radius-bottom="0.07" radius-top="0" height="0.15"
            material="color: #43a047; metalness: 0.3; roughness: 0.4"></a-cone>
-    <a-torus id="ciseaux" class="interactif"
-           instrument="nom: Ciseaux; zone: zone_ciseaux; freq: 820; vib: 90; couleur: #ffe082"
-           position="-0.2 0.83 -1" rotation="-90 0 0" radius="0.06" radius-tubular="0.018"
-           segments-tubular="16" segments-radial="8"
-           material="color: #fbc02d; metalness: 0.3; roughness: 0.4"></a-torus>
+    <!-- 4e instrument : ciseaux = anneau violet de 12 cm -->
+    <a-torus id="ciseaux" class="interactif" instrument="nom: Ciseaux; zone: zone_ciseaux; freq: 880; vib: 90"
+           position="-0.2 0.8 -1" rotation="-90 0 0" radius="0.05" radius-tubular="0.01"
+           segments-radial="8" segments-tubular="24"
+           material="color: #8e24aa; metalness: 0.3; roughness: 0.4"></a-torus>
   </a-entity>
 
-  <!-- BLOC 4 : XR ORIGIN (rig) + caméra + curseur -->
+  <!-- ============ BLOC 4 : XR ORIGIN (rig) + caméra + curseur ============ -->
   <a-entity id="rig" position="0 0 0.8" wasd-controls="acceleration: 15">
     <a-entity id="tete" camera position="0 1.6 0" look-controls>
       <a-entity id="curseur" cursor="fuse: false" raycaster="objects: .interactif; far: 8"
@@ -150,120 +103,52 @@
                 material="color: #ffffff; shader: flat; opacity: 0.9"></a-entity>
     </a-entity>
   </a-entity>
+
+  <!-- Panneau de résultat (bonus d) : placé à 1,2 m devant l'utilisateur à la fin -->
+  <a-entity id="Resultat" visible="false">
+    <a-plane width="1.1" height="0.7" material="color: #1565c0; shader: flat; opacity: 0.95"></a-plane>
+    <a-text id="ResultatTexte" position="0 0.08 0.01" width="1.0" align="center" color="#ffffff" value=""></a-text>
+    <a-plane id="BoutonRejouer" position="0 -0.24 0.01" width="0.4" height="0.12"
+             material="color: #ffffff; shader: flat"></a-plane>
+    <a-text position="0 -0.24 0.02" width="0.8" align="center" color="#1565c0" value="Rejouer"></a-text>
+  </a-entity>
 </a-scene>
 
 <script>
 const THREE = AFRAME.THREE;
-const NB = 4;                      // nombre d'instruments
-const LIMITE_DIFFICILE = 90;       // secondes
+const params = new URLSearchParams(location.search);
+const DIFFICILE = params.has('difficile');            // bonus e : ?difficile
 
 /* ---------- Son et vibration ---------- */
 let ctxAudio = null;
-function bip(freq = 660, duree = 0.12, type = 'sine') {
+function bip(freq = 660, duree = 0.12) {
   try {
     ctxAudio = ctxAudio || new (window.AudioContext || window.webkitAudioContext)();
     const o = ctxAudio.createOscillator(), g = ctxAudio.createGain();
-    o.type = type; o.frequency.value = freq; g.gain.value = 0.15;
+    o.frequency.value = freq; g.gain.value = 0.15;
     o.connect(g); g.connect(ctxAudio.destination);
     o.start(); o.stop(ctxAudio.currentTime + duree);
   } catch (e) { /* pas de son : on continue */ }
 }
 function vibrer(motif) { if (navigator.vibrate) navigator.vibrate(motif); }   // Android seulement
-function sansAccents(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, ''); }
 
 /* ---------- État du jeu ---------- */
-const jeu = { niveau: null, main: null, score: 0, erreurs: 0, saisies: 0, t0: null, fini: true, chrono: null };
+const jeu = { main: null, score: 0, erreurs: 0, aides: 0, t0: null, fini: false, total: 0 };
 const hud = document.getElementById('hud');
-const sceneEl = document.getElementById('scene');
-
-function tempsEcoule() { return jeu.t0 ? Math.floor((performance.now() - jeu.t0) / 1000) : 0; }
-
 function majPanneau(msg) {
-  let ligne = 'Score : ' + jeu.score + ' / ' + NB + '   Erreurs : ' + jeu.erreurs;
-  if (jeu.niveau === 'difficile' && jeu.t0) ligne += '   Temps : ' + Math.max(0, LIMITE_DIFFICILE - tempsEcoule()) + ' s';
-  document.getElementById('Panneau').setAttribute('text', 'value', sansAccents(ligne + '\n' + msg));
-  hud.textContent = (jeu.fini ? 'Partie terminée - touchez Rejouer'
-                   : jeu.main ? 'En main : ' + jeu.main.components.instrument.data.nom + ' - touchez sa zone'
+  document.getElementById('Panneau').setAttribute('text', 'value',
+    'Score : ' + jeu.score + ' / ' + jeu.total + '   Erreurs : ' + jeu.erreurs + '\n' + msg);
+  hud.textContent = (jeu.main ? 'En main : ' + jeu.main.components.instrument.data.nom + ' - touchez sa zone'
                               : 'Touchez un instrument pour le saisir')
-                   + ' | ' + jeu.score + '/' + NB + ' | Erreurs ' + jeu.erreurs;
+                    + ' | Score ' + jeu.score + '/' + jeu.total + ' Erreurs ' + jeu.erreurs
+                    + (DIFFICILE ? ' | Mode difficile' : '');
 }
 
-/* ---------- Placement des zones et étiquettes ---------- */
-const SLOTS_X = [0.25, 0.52, 0.79, 1.06];
-const ZONES = ['zone_bistouri', 'zone_pince', 'zone_ecarteur', 'zone_ciseaux'];
-const NOMS = { zone_bistouri: 'Bistouri', zone_pince: 'Pince', zone_ecarteur: 'Ecarteur', zone_ciseaux: 'Ciseaux' };
-
-function placerZones(melanger) {
-  const ordre = ZONES.slice();
-  if (melanger) for (let i = ordre.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)); [ordre[i], ordre[j]] = [ordre[j], ordre[i]];
-  }
-  document.querySelectorAll('.etiquette').forEach(e => e.remove());
-  ordre.forEach((id, i) => {
-    const z = document.getElementById(id);
-    z.setAttribute('position', { x: SLOTS_X[i], y: 0.755, z: -1 });
-    const inst = document.querySelector('[instrument*="' + id + '"]').components.instrument;
-    // Difficile : toutes les zones en gris, sans nom
-    z.setAttribute('material', 'color', melanger ? '#b0bec5' : inst.data.couleur);
-    if (!melanger) {
-      const t = document.createElement('a-text');
-      t.classList.add('etiquette');
-      t.setAttribute('position', { x: SLOTS_X[i], y: 0.9, z: -1 });
-      t.setAttribute('width', 0.7); t.setAttribute('align', 'center'); t.setAttribute('color', '#1b2a41');
-      t.setAttribute('value', NOMS[id]);
-      document.getElementById('Zones').appendChild(t);
-    }
-  });
-  // Indices affichés dans l'aide (utile en mode difficile)
-  document.getElementById('indices').innerHTML = melanger
-    ? '<small><b>Indice (difficile)</b> : de gauche à droite, les zones sont : ' + ordre.map(id => NOMS[id]).join(', ') + '.</small>'
-    : '';
-}
-
-/* ---------- Démarrer / rejouer ---------- */
-function demarrer(niveau) {
-  if (jeu.main) jeu.main.components.instrument.relacher(true);
-  document.querySelectorAll('[instrument]').forEach(el => el.components.instrument.reinitialiser());
-  Object.assign(jeu, { niveau, main: null, score: 0, erreurs: 0, saisies: 0, t0: null, fini: false });
-  clearInterval(jeu.chrono);
-  placerZones(niveau === 'difficile');
-  document.getElementById('Resultats').setAttribute('visible', false);
-  document.getElementById('menu').classList.add('cache');
-  document.getElementById('barre').classList.remove('cache');
-  document.getElementById('rig').object3D.position.set(0, 0, 0.8);
-  bip(500, 0.08); bip(750, 0.12);
-  majPanneau('Niveau : ' + (niveau === 'difficile' ? 'Difficile' : 'Facile') + '. Saisissez un instrument.');
-  if (niveau === 'difficile') jeu.chrono = setInterval(() => {
-    if (!jeu.t0 || jeu.fini) return;
-    if (tempsEcoule() >= LIMITE_DIFFICILE) terminer(false);
-    else majPanneau('Vite !');
-  }, 1000);
-}
-
-function terminer(reussi) {
-  jeu.fini = true;
-  clearInterval(jeu.chrono);
-  if (jeu.main) jeu.main.components.instrument.relacher(true);
-  const s = tempsEcoule();
-  const precision = jeu.score + jeu.erreurs ? Math.round(100 * jeu.score / (jeu.score + jeu.erreurs)) : 0;
-  const etoiles = !reussi ? 0 : jeu.erreurs === 0 ? 3 : jeu.erreurs <= 2 ? 2 : 1;
-  const txt = (reussi ? 'BRAVO ! Mission terminee' : 'Temps ecoule !') + '\n'
-    + 'Niveau : ' + (jeu.niveau === 'difficile' ? 'Difficile' : 'Facile') + '\n'
-    + 'Temps : ' + s + ' s   Erreurs : ' + jeu.erreurs + '\n'
-    + 'Precision : ' + precision + ' %   Etoiles : ' + '*'.repeat(etoiles) + '-'.repeat(3 - etoiles);
-  document.getElementById('ResultatsTexte').setAttribute('value', txt);
-  document.getElementById('Resultats').setAttribute('visible', true);
-  majPanneau(reussi ? 'Termine en ' + s + ' s' : 'Temps ecoule');
-  if (reussi) { bip(660, 0.15); setTimeout(() => bip(880, 0.15), 160); setTimeout(() => bip(1100, 0.3), 330); vibrer([60, 40, 60, 40, 120]); }
-  else { bip(200, 0.5, 'square'); vibrer([300]); }
-  console.log('RESULTAT', JSON.stringify({ niveau: jeu.niveau, reussi, secondes: s, erreurs: jeu.erreurs, precision, etoiles }));
-}
-
-/* ---------- Composant : téléportation ---------- */
+/* ---------- Téléportation ---------- */
 AFRAME.registerComponent('teleport-sol', {
   init() {
     this.el.addEventListener('click', e => {
-      if (!e.detail.intersection) return;
+      if (!e.detail.intersection || jeu.fini) return;
       const p = e.detail.intersection.point;
       const x = Math.max(-2.4, Math.min(2.4, p.x)), z = Math.max(-2.4, Math.min(2.4, p.z));
       document.getElementById('rig').object3D.position.set(x, 0, z);
@@ -272,86 +157,80 @@ AFRAME.registerComponent('teleport-sol', {
   }
 });
 
-/* ---------- Composant : instrument (machine à états) ---------- */
-/* libre -> survole -> saisi -> (libre | depose)                    */
+/* ---------- Instrument : libre -> survole -> saisi -> (libre | depose) ---------- */
 AFRAME.registerComponent('instrument', {
   schema: { nom: { type: 'string' }, zone: { type: 'string' },
-            freq: { type: 'number', default: 520 }, vib: { type: 'number', default: 30 },
-            couleur: { type: 'color', default: '#ffffff' } },
+            freq: { type: 'number', default: 520 }, vib: { type: 'number', default: 30 } },
   init() {
+    jeu.total++;                                        // bonus a : le total est compté, pas écrit
     this.etat = 'libre';
     this.posInit = this.el.object3D.position.clone();
     this.rotInit = this.el.object3D.rotation.clone();
-    this.el.addEventListener('mouseenter', () => { if (this.etat === 'libre' && !jeu.fini) this.setEtat('survole'); });
+    this.el.addEventListener('mouseenter', () => { if (this.etat === 'libre') this.setEtat('survole'); });
     this.el.addEventListener('mouseleave', () => { if (this.etat === 'survole') this.setEtat('libre'); });
     this.el.addEventListener('click', () => {
-      if (jeu.fini || this.etat === 'depose') return;
+      if (this.etat === 'depose' || jeu.fini) return;
       if (this.etat === 'saisi') this.relacher();
       else if (!jeu.main) this.saisir();
     });
   },
   setEtat(e) {
     this.etat = e;
-    this.el.setAttribute('material', 'emissive', e === 'survole' ? '#ffee58' : '#000000');
-    this.el.setAttribute('material', 'emissiveIntensity', e === 'survole' ? 0.6 : 0);
+    const brille = e === 'survole' && !DIFFICILE;       // bonus e : pas de surbrillance
+    this.el.setAttribute('material', 'emissive', brille ? '#ffee58' : '#000000');
+    this.el.setAttribute('material', 'emissiveIntensity', brille ? 0.6 : 0);
   },
   saisir() {
     if (!jeu.t0) jeu.t0 = performance.now();
-    jeu.saisies++;
     document.getElementById('tete').object3D.attach(this.el.object3D);
     this.el.object3D.position.set(0.22, -0.22, -0.7);
     this.el.object3D.rotation.set(0, 0, 0);
     this.el.classList.remove('interactif');
     jeu.main = this.el;
     this.setEtat('saisi');
-    bip(this.data.freq); vibrer(this.data.vib);             // son + vibration propres à l'instrument
+    bip(this.data.freq); vibrer(this.data.vib);         // bonus b : son et vibration propres
     majPanneau('Vous tenez : ' + this.data.nom);
   },
-  relacher(silencieux) {
-    sceneEl.object3D.attach(this.el.object3D);
+  relacher(silence) {
+    document.getElementById('scene').object3D.attach(this.el.object3D);
     this.el.object3D.position.copy(this.posInit);
     this.el.object3D.rotation.copy(this.rotInit);
     this.el.classList.add('interactif');
     jeu.main = null;
     this.setEtat('libre');
-    if (!silencieux) { bip(this.data.freq * 0.6, 0.1); majPanneau('Instrument repose.'); }
+    if (!silence) { bip(this.data.freq * 0.6, 0.1); majPanneau('Instrument repose.'); }
   },
   deposer(zoneEl) {
     const p = new THREE.Vector3();
     zoneEl.object3D.getWorldPosition(p);
-    sceneEl.object3D.attach(this.el.object3D);
+    document.getElementById('scene').object3D.attach(this.el.object3D);
     this.el.object3D.position.set(p.x, p.y + 0.06, p.z);
     this.el.object3D.rotation.set(0, 0, 0);
     jeu.main = null;
     this.setEtat('depose');
-  },
-  reinitialiser() {
-    sceneEl.object3D.attach(this.el.object3D);
-    this.el.object3D.position.copy(this.posInit);
-    this.el.object3D.rotation.copy(this.rotInit);
-    this.el.classList.add('interactif');
-    this.setEtat('libre');
   }
 });
 
-/* ---------- Composant : zone de dépôt ---------- */
+/* ---------- Zone de dépôt (règle métier) ---------- */
 AFRAME.registerComponent('zone-depot', {
   init() {
+    this.couleur = this.el.getAttribute('color');
+    this.ok = false;
     this.el.addEventListener('click', () => {
       if (!jeu.main || jeu.fini) return;
       const inst = jeu.main.components.instrument;
       if (inst.data.zone === this.el.id) {
         inst.deposer(this.el);
         jeu.score++;
+        this.ok = true;
         bip(inst.data.freq * 1.5, 0.2); vibrer([40, 60, 40]);
         this.el.setAttribute('material', 'color', '#2e7d32');
-        if (jeu.score === NB) terminer(true); else majPanneau('Bien joue !');
+        if (jeu.score === jeu.total) terminer(); else majPanneau('Bien joue !');
       } else {
         jeu.erreurs++;
-        bip(180, 0.3, 'sawtooth'); vibrer([100, 50, 100]);
-        const ancienne = this.el.getAttribute('material').color;
+        bip(180, 0.3); vibrer([100, 50, 100]);
         this.el.setAttribute('material', 'color', '#d32f2f');
-        setTimeout(() => this.el.setAttribute('material', 'color', ancienne), 500);
+        setTimeout(() => this.el.setAttribute('material', 'color', this.ok ? '#2e7d32' : this.couleur), 500);
         inst.relacher(true);
         majPanneau('Mauvaise zone. Reessayez.');
       }
@@ -359,20 +238,57 @@ AFRAME.registerComponent('zone-depot', {
   }
 });
 
-/* ---------- Boutons HTML ---------- */
-document.getElementById('btnFacile').onclick = () => demarrer('facile');
-document.getElementById('btnDifficile').onclick = () => demarrer('difficile');
-document.getElementById('btnAide').onclick = () => document.getElementById('aide').classList.remove('cache');
-document.getElementById('btnRejouer').onclick = () => {
-  clearInterval(jeu.chrono); jeu.fini = true;
-  document.getElementById('menu').classList.remove('cache');
+/* ---------- Bonus c : bouton Aide (la bonne zone clignote 2 s) ---------- */
+const btnAide = document.getElementById('btnAide');
+if (DIFFICILE) btnAide.disabled = true;
+btnAide.onclick = () => {
+  if (DIFFICILE || jeu.fini) return;
+  const cible = jeu.main || [...document.querySelectorAll('[instrument]')]
+                  .find(el => el.components.instrument.etat !== 'depose');
+  if (!cible) return;
+  const zone = document.getElementById(cible.components.instrument.data.zone);
+  const zc = zone.components['zone-depot'];
+  jeu.aides++;
+  bip(990, 0.1);
+  let n = 0;
+  const t = setInterval(() => {
+    zone.setAttribute('material', 'color', n % 2 === 0 ? '#ffeb3b' : zc.couleur);
+    if (++n >= 4) { clearInterval(t); zone.setAttribute('material', 'color', zc.ok ? '#2e7d32' : zc.couleur); }
+  }, 500);
+  majPanneau('Aide : regardez la zone qui clignote.');
 };
 
-/* ---------- Mesures (étape Performance) : ?stats et ?stress=N ---------- */
-const params = new URLSearchParams(location.search);
+/* ---------- Bonus d : panneau de résultat devant l'utilisateur ---------- */
+function terminer() {
+  jeu.fini = true;
+  const s = ((performance.now() - jeu.t0) / 1000).toFixed(0);
+  majPanneau('TERMINE en ' + s + ' s');
+  document.getElementById('ResultatTexte').setAttribute('value',
+    'Mission terminee !\n\nTemps : ' + s + ' s\nErreurs : ' + jeu.erreurs + '\nAides : ' + jeu.aides
+    + (DIFFICILE ? '\n(mode difficile)' : ''));
+  // 1,2 m devant le regard, à hauteur des yeux
+  const tete = document.getElementById('tete').object3D;
+  const pos = new THREE.Vector3(), dir = new THREE.Vector3();
+  tete.getWorldPosition(pos); tete.getWorldDirection(dir);     // pour une caméra, dir pointe vers l'arrière
+  dir.y = 0; dir.normalize().multiplyScalar(-1.2);
+  const res = document.getElementById('Resultat');
+  res.object3D.position.set(pos.x + dir.x, pos.y, pos.z + dir.z);
+  res.object3D.lookAt(pos.x, pos.y, pos.z);
+  res.setAttribute('visible', true);
+  document.getElementById('BoutonRejouer').classList.add('interactif');
+  document.getElementById('curseur').components.raycaster.refreshObjects();
+  bip(660, 0.15); setTimeout(() => bip(880, 0.15), 160); setTimeout(() => bip(1100, 0.3), 330);
+  vibrer([60, 40, 60, 40, 120]);
+  console.log('RESULTAT', JSON.stringify({ secondes: +s, erreurs: jeu.erreurs, aides: jeu.aides, difficile: DIFFICILE }));
+}
+document.getElementById('BoutonRejouer').addEventListener('click', () => location.reload());
+document.getElementById('btnRejouer').onclick = () => location.reload();
+
+/* ---------- Mesures : ?stats, ?stress=N, &seg=8 ---------- */
+const sceneEl = document.getElementById('scene');
 if (params.has('stats')) sceneEl.setAttribute('stats', '');
 const nbStress = parseInt(params.get('stress') || '0', 10);
-const seg = parseInt(params.get('seg') || '32', 10);     // ?seg=8 pour la version optimisée
+const seg = parseInt(params.get('seg') || '32', 10);
 for (let i = 0; i < nbStress; i++) {
   const s = document.createElement('a-sphere');
   s.setAttribute('radius', 0.08);
@@ -383,7 +299,7 @@ for (let i = 0; i < nbStress; i++) {
   sceneEl.appendChild(s);
 }
 
-sceneEl.addEventListener('loaded', () => { placerZones(false); majPanneau('Choisissez un niveau.'); });
+sceneEl.addEventListener('loaded', () => majPanneau(DIFFICILE ? 'Mode difficile : sans aide.' : 'Saisissez un instrument.'));
 </script>
 </body>
 </html>
